@@ -1,4 +1,4 @@
-# randstr - a Go random string generator 
+# randstr - a secure Go random string generator 
 
 A super simple random string generator suitable for passwords **(cryptographic strength entropy)** and the creation of all sorts of random jibberish. 
 
