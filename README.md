@@ -1,6 +1,6 @@
 # randstr - a Go random string generator 
 
-A super simple random string generator suitable for passwords and the creation of all sorts of random jibberish. 
+A super simple random string generator suitable for passwords (cryptographic strength entropy) and the creation of all sorts of random jibberish. 
 
 ## Source (this stuff) 
 
