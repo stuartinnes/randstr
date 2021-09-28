@@ -1,10 +1,10 @@
-# randstr - a Go random string generator 
+# randstr - a random string generator 
 
 A super simple random string generator suitable for passwords **(cryptographic strength entropy)** and the creation of all sorts of random jibberish. 
 
-A quick check on [Kasperski Password Check](https:/password.kaspersky.com/) for a default password gives the following
+A quick look on [Kasperski Password Check](https://password.kaspersky.com/) _**using a default generated string**_ gives the following
 
-![password check result!](/etc/password_check.jpeg "wow")
+![password check result!](etc/password_check.jpeg "wow")
 
 ## Source (this stuff) 
 

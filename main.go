@@ -39,7 +39,6 @@ var (
 			},
 		},
 		Action: func(c *cli.Context) error {
-
 			var (
 				numChars   = c.Int("chars")
 				numDigits  = c.Int("digits")
