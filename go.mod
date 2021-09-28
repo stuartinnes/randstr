@@ -1,4 +1,4 @@
-module github.com/stuartinnes/randstr
+module randstr
 
 go 1.17
 

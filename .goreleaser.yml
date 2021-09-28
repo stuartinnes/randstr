@@ -41,5 +41,5 @@ brews:
     url_template: "https://github.com/stuartinnes/randstr/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
     homepage: https://github.com/stuartinnes/randstr
     test:
-      system "#{bin}/randstr, -h"
+      system "#{bin}/randstr -h"
     license: "MIT"
