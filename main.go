@@ -12,46 +12,43 @@ import (
 )
 
 const (
-	chars   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	lower   = "abcdefghijklmnopqrstuvwxyz"
+	upper   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	digits  = "0123456789"
 	symbols = "~!@#$%^&*()_+`-={}|[]\\:\"<>?,./"
 )
 
 var (
 	app = &cli.App{
-		Name:  "Random string generator",
-		Usage: "generate some random strings why dont you!",
+		Name: "Random string generator",
 		Flags: []cli.Flag{
-			&cli.IntFlag{
-				Name:    "chars",
-				Aliases: []string{"c"},
-				Value:   8,
+			&cli.UintFlag{
+				Name:    "upper",
+				Usage:   "upper case characters",
+				Aliases: []string{"u"},
+				Value:   4,
 			},
-			&cli.IntFlag{
+			&cli.UintFlag{
+				Name:    "lower",
+				Usage:   "dower case characters",
+				Aliases: []string{"l"},
+				Value:   4,
+			},
+			&cli.UintFlag{
 				Name:    "digits",
+				Usage:   "digits",
 				Aliases: []string{"d"},
-				Value:   8,
+				Value:   4,
 			},
-			&cli.IntFlag{
+			&cli.UintFlag{
 				Name:    "symbols",
+				Usage:   "symbols",
 				Aliases: []string{"s"},
-				Value:   8,
+				Value:   4,
 			},
 		},
 		Action: func(c *cli.Context) error {
-			var (
-				numChars   = c.Int("chars")
-				numDigits  = c.Int("digits")
-				numSymbols = c.Int("symbols")
-			)
-
-			for _, v := range []int{numChars, numDigits, numDigits} {
-				if v < 0 {
-					log.Fatal("argument values cannot be negative")
-				}
-			}
-
-			printRandStr(numChars, numDigits, numSymbols)
+			fmt.Println(getRandStr(c.Uint("u"), c.Uint("l"), c.Uint("d"), c.Uint("s")))
 			return nil
 		},
 	}
@@ -61,19 +58,30 @@ func main() {
 	_ = app.Run(os.Args)
 }
 
-func printRandStr(numChars, numDigits, numSymbols int) {
+func getRandStr(up, low, dig, sym uint) string {
 	var (
-		strLen = numChars + numDigits + numSymbols
+		//the overall length of our generated string - converted to an INT for later
+		//use in shuffle
+		strLen = int(up + low + dig + sym)
 		err    error
-	)
 
-	if strLen <= 0 {
-		log.Fatal("nothing to do")
-	}
+		//ranges are used to determine which dictionary to use within
+		//our main generator below - converted to an INT which avoids conversion
+		//within our loop
+		symbolRange = int(up + low + dig)
+		digitRange  = int(up + low)
+		lowRange    = int(up)
 
-	var (
+		//default dictionary value
+		dict string
+
+		//a container for our random bytes
 		randBytes = make([]byte, strLen)
 	)
+
+	if strLen == 0 {
+		log.Fatal("nothing to do")
+	}
 
 	_, err = rand.Reader.Read(randBytes)
 	if err != nil {
@@ -81,23 +89,27 @@ func printRandStr(numChars, numDigits, numSymbols int) {
 	}
 
 	for k, v := range randBytes {
-		dict := ""
 		switch {
-		case k > (numChars+numDigits)-1:
+		case k >= symbolRange:
 			dict = symbols
-		case k > numChars-1:
+		case k >= digitRange:
 			dict = digits
+		case k >= lowRange:
+			dict = lower
 		default:
-			dict = chars
+			dict = upper
 		}
+
+		//switch out the byte value with something from one of our dictionaries
 		randBytes[k] = dict[v%byte(len(dict))]
 	}
 
+	//now we can shuffle our ordered bytes slice
 	mrand.Seed(time.Now().Unix())
 	mrand.Shuffle(strLen,
 		func(i, j int) {
 			randBytes[i], randBytes[j] = randBytes[j], randBytes[i]
 		})
 
-	fmt.Println(string(randBytes))
+	return string(randBytes)
 }
